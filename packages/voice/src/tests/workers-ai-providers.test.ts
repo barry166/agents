@@ -128,6 +128,22 @@ describe("WorkersAIFluxSTT", () => {
     expect(speechStarts).toEqual([undefined]);
   });
 
+  it("passes all configured keyterms to Workers AI", async () => {
+    const ai = new MockAi();
+
+    new WorkersAIFluxSTT(ai, {
+      keyterms: ["BrokerBot", "SkySlope", "MLS"]
+    }).createSession({});
+
+    await waitForConnect(ai);
+
+    expect(ai.calls[0]?.input.keyterm).toEqual([
+      "BrokerBot",
+      "SkySlope",
+      "MLS"
+    ]);
+  });
+
   it("prefers non-empty EndOfTurn transcript and clears turn state", async () => {
     const ai = new MockAi();
     const utterances: string[] = [];
@@ -249,6 +265,22 @@ describe("WorkersAINova3STT", () => {
     );
 
     expect(utterances).toEqual([]);
+  });
+
+  it("passes all configured keyterms to Workers AI", async () => {
+    const ai = new MockAi();
+
+    new WorkersAINova3STT(ai, {
+      keyterms: ["BrokerBot", "SkySlope", "MLS"]
+    }).createSession({});
+
+    await waitForConnect(ai);
+
+    expect(ai.calls[0]?.input.keyterm).toEqual([
+      "BrokerBot",
+      "SkySlope",
+      "MLS"
+    ]);
   });
 
   it("handles late Results messages after websocket close", async () => {
